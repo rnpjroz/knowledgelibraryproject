@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+  <meta charset="utf-8" />
+</head>
+<body>
+  <a href="#/AddEmployee" class="btn btn-default btn-sm">Add New Record</a>
+  <br />
+  <div class="table-responsive">
+    <table id="mytable" class="table table-bordred table-striped">
+      <thead>
+      <th>ID</th>
+      <th>Name</th>
+      <th>URL</th>
+      </thead>
+      <tbody>
+        <tr ng-repeat tr="item in KnowledgeLibraryDetailList">
+          <td>{{item.ID}}</td>
+          <td>{{item.Name}}</td>
+          <td>{{item.URL}}</td>
+          <td>
+            <a class="btn btn-primary btn-success" href="#/Edit/{{item.ID}}">
+              Edit
+            </a>
+          </td>
+          <td>
+            <a class="btn btn-warning" href="#/Delete/{{item.ID}}">
+              Delete
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
