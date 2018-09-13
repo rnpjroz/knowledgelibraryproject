@@ -7,9 +7,12 @@ using KL.Persistence;
 
 namespace KL.WebAPI.Controllers
 {
+  [RoutePrefix("api/kld")]
   public class KnowledgeLibraryDetailsController : ApiController
   {
     //get all
+    [Route("getall")]
+    [HttpGet]
     public IEnumerable<KnowledgeLibraryDetail> Get()
     {
       BaseRepository<KnowledgeLibraryDetail> repo = new BaseRepository<KnowledgeLibraryDetail>();
@@ -21,6 +24,8 @@ namespace KL.WebAPI.Controllers
       return records;
     }
 
+    [Route("get/{id}")]
+    [HttpGet]
     public IHttpActionResult Get(Guid id)
     {
       var records = Get().FirstOrDefault((r) => r.Id == id);
@@ -30,6 +35,8 @@ namespace KL.WebAPI.Controllers
       return Ok(records);
     }
 
+    [Route("add")]
+    [HttpPost]
     public IHttpActionResult Post(KnowledgeLibraryDetail record)
     {
       if (!ModelState.IsValid)
@@ -48,6 +55,8 @@ namespace KL.WebAPI.Controllers
       return Ok();
     }
 
+    [Route("update")]
+    [HttpPut]
     public IHttpActionResult Put(KnowledgeLibraryDetail record)
     {
       if (!ModelState.IsValid)
@@ -66,6 +75,8 @@ namespace KL.WebAPI.Controllers
       return Ok();
     }
 
+    [Route("delete/{id}")]
+    [HttpDelete]
     public IHttpActionResult Delete(Guid id)
     {
       Guid parsedGuid = Guid.Empty;

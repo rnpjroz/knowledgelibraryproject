@@ -8,6 +8,7 @@ using FluentNHibernate.Cfg.Db;
 
 namespace KL.Persistence
 {
+  //TestEdit
   //1st dependency of Session Builder Factory class; Defines the connection string and mapping
   public abstract class SessionBuilderBase<T> : ISessionBuilder
   {

@@ -1,0 +1,29 @@
+﻿<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="content/bootstrap.min.css">
+<script>
+    $(document).ready(function () {
+        
+      $.getJSON("Home/GetAll",
+        function (json) {
+        var tr;
+        
+        for (var i = 0; i < json.length; i++) {
+                tr = $('<tr/>');
+                tr.append("<td>" + json[i].Name + "</td>");
+                tr.append("<td>" + json[i].URL + "</td>");
+                tr.append("<td>" + json[i].Description + "</td>");
+                $('table').append(tr);
+            }
+        });
+    });
+</script>
+<table class="table table-bordered table-condensed table-hover table-striped">
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th>URL</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
