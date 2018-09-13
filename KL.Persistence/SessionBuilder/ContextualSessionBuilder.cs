@@ -6,7 +6,7 @@ using NHibernate.Context;
 
 namespace KL.Persistence
 {
-  //2nd dependency of SessionBuilderFactory
+  //2nd dependency of SessionBuilderFactory 
   public class ContextualSessionBuilder<T> : SessionBuilderBase<T>
   {
     public override ISession CurrentSession
