@@ -7,6 +7,8 @@ using System.Web.Mvc;
 using System.Net.Http;
 using System.Web.Script.Serialization;
 
+using KL.Domain;
+
 namespace KnowledgeLibraryMvcSite.Controllers
 {
   public class HomeController : Controller
@@ -38,19 +40,22 @@ namespace KnowledgeLibraryMvcSite.Controllers
 
     public ActionResult CreateKld()
     {
-      StudentDetailViewModel kldRecordToLoad = new StudentDetailViewModel();
+      KnowledgeLibraryDetail kldRecordToLoad = new KnowledgeLibraryDetail();
       return View("CreateKld", kldRecordToLoad);
     }
 
     [HttpPost]
-    public ActionResult CreateKld(myObject kldRecordToSave)
+    public ActionResult CreateKld(KnowledgeLibraryDetail kldRecordToSave)
     {
       using (var client = new HttpClient())
       {
         client.BaseAddress = new Uri("http://localhost:52462/api/");
 
+        //todo: this is a hack, fix later and load dynamic dropdowns
+        kldRecordToSave.DevelopmentTypeId = Guid.Parse("71BE2DB6-C7EE-4EF9-9333-C204E1F61DBA");
+
         //HTTP POST
-        var postTask = client.PostAsJsonAsync<StudentViewModel>("kld/add", kldRecordToSave);
+        var postTask = client.PostAsJsonAsync<KnowledgeLibraryDetail>("kld/add", kldRecordToSave);
         postTask.Wait();
 
         var result = postTask.Result;

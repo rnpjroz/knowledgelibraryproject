@@ -181,10 +181,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\DevelopmentType.cs" />
-    <Compile Include="Models\DevelopmentTypeMap.cs" />
-    <Compile Include="Models\KnowledgeLibraryDetail.cs" />
-    <Compile Include="Models\KnowledgeLibraryDetailMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -201,8 +197,13 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\KL.Domain\KL.Domain.csproj">
+      <Project>{25ab4810-5d2d-4ec7-bc88-ee70cd889475}</Project>
+      <Name>KL.Domain</Name>
+    </ProjectReference>
     <ProjectReference Include="..\KL.Persistence\KL.Persistence.csproj">
       <Project>{78010b4e-6239-4dc1-9396-75ea3b33d1e7}</Project>
       <Name>KL.Persistence</Name>

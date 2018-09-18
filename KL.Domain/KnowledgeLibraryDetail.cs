@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace KL.WebAPI.Models
+namespace KL.Domain
 {
   public class KnowledgeLibraryDetail
   {

@@ -1,6 +1,6 @@
 ﻿using FluentNHibernate.Mapping;
 
-namespace KL.WebAPI.Models
+namespace KL.Domain
 {
   public class DevelopmentTypeMap : ClassMap<DevelopmentType>
   {

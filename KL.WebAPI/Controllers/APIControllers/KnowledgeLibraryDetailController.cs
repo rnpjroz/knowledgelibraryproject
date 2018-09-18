@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
-using KL.WebAPI.Models;
+//using KL.WebAPI.Models;
+using KL.Domain;
 using KL.Persistence;
 
 namespace KL.WebAPI.Controllers
