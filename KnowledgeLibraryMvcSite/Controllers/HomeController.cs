@@ -36,6 +36,35 @@ namespace KnowledgeLibraryMvcSite.Controllers
       return Json(records, JsonRequestBehavior.AllowGet);
     }
 
+    public ActionResult CreateKld()
+    {
+      StudentDetailViewModel kldRecordToLoad = new StudentDetailViewModel();
+      return View("CreateKld", kldRecordToLoad);
+    }
+
+    [HttpPost]
+    public ActionResult CreateKld(myObject kldRecordToSave)
+    {
+      using (var client = new HttpClient())
+      {
+        client.BaseAddress = new Uri("http://localhost:52462/api/");
+
+        //HTTP POST
+        var postTask = client.PostAsJsonAsync<StudentViewModel>("kld/add", kldRecordToSave);
+        postTask.Wait();
+
+        var result = postTask.Result;
+        if (result.IsSuccessStatusCode)
+        {
+          return RedirectToAction("Index");
+        }
+      }
+
+      ModelState.AddModelError(string.Empty, "Server Error. Please contact administrator.");
+
+      return View(kldRecordToSave);
+    }
+
     // GET: Home
     //public ActionResult Index()
     //{
