@@ -1,29 +1,51 @@
-﻿<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<link rel="stylesheet" type="text/css" href="content/bootstrap.min.css">
-<script>
-    $(document).ready(function () {
-        
-      $.getJSON("Home/GetAll",
-        function (json) {
-        var tr;
-        
-        for (var i = 0; i < json.length; i++) {
-                tr = $('<tr/>');
-                tr.append("<td>" + json[i].Name + "</td>");
-                tr.append("<td>" + json[i].URL + "</td>");
-                tr.append("<td>" + json[i].Description + "</td>");
-                $('table').append(tr);
-            }
-        });
-    });
-</script>
-<table class="table table-bordered table-condensed table-hover table-striped">
-  <thead>
+﻿@model IEnumerable<KL.Domain.KnowledgeLibraryDetail>
+
+<p>
+    @Html.ActionLink("Create New", "CreateKld")
+</p>
+<table class="table">
     <tr>
-      <th>Id</th>
-      <th>URL</th>
-      <th>Description</th>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.URL)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DevelopmentTypeId)
+        </th>
+        <th></th>
     </tr>
-  </thead>
-  <tbody></tbody>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.URL)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DevelopmentTypeId)
+        </td>
+        <td>
+            @*@Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Id }) |*@
+            @*@Html.ActionLink("Delete", "Delete", new { id=item.Id })*@
+            
+            @using (Html.BeginForm("Delete", "", new { id = item.Id }))
+            {
+              @Html.AntiForgeryToken()
+              <input type="submit" class="glyphicon glyphicon-remove" />
+            }
+        </td>
+    </tr>
+}
+
 </table>

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 using System.Net.Http;
@@ -15,28 +13,45 @@ namespace KnowledgeLibraryMvcSite.Controllers
   {
     public ActionResult Index()
     {
-      return View();
-    }
+      List<KnowledgeLibraryDetail> records = new List<KnowledgeLibraryDetail>();
 
-    [HttpGet]
-    public JsonResult GetAll()
-    {
-      var records = new object();
       using (var handler = new HttpClientHandler())
       {
         using (var client = new HttpClient(handler))
         {
           client.BaseAddress = new Uri("http://localhost:52462/api/");
-          var result = client.GetAsync("kld/getall").Result;
+          var result = client.GetAsync("kld/getall").Result;         
           string resultContent = result.Content.ReadAsStringAsync().Result;
 
           JavaScriptSerializer json_serializer = new JavaScriptSerializer();
-          records = json_serializer.DeserializeObject(resultContent);
+          records = json_serializer.Deserialize<List<KnowledgeLibraryDetail>>(resultContent);
         }
       }
 
-      return Json(records, JsonRequestBehavior.AllowGet);
+      return View(records);
     }
+
+    //old working Json
+    //[HttpGet]
+    //public JsonResult GetAll()
+    //{
+    //  var records = new object();
+    //  using (var handler = new HttpClientHandler())
+    //  {
+    //    using (var client = new HttpClient(handler))
+    //    {
+    //      client.BaseAddress = new Uri("http://localhost:52462/api/");
+    //      var result = client.GetAsync("kld/getall").Result;
+    //      string resultContent = result.Content.ReadAsStringAsync().Result;
+
+
+    //      JavaScriptSerializer json_serializer = new JavaScriptSerializer();
+    //      records = json_serializer.DeserializeObject(resultContent);
+    //    }
+    //  }
+
+    //  return Json(records, JsonRequestBehavior.AllowGet);
+    //}
 
     public ActionResult CreateKld()
     {
@@ -68,6 +83,51 @@ namespace KnowledgeLibraryMvcSite.Controllers
       ModelState.AddModelError(string.Empty, "Server Error. Please contact administrator.");
 
       return View(kldRecordToSave);
+    }
+
+    //[HttpDelete]
+    //public ActionResult Delete(Guid id)
+    //{
+    //  using (var client = new HttpClient())
+    //  {
+    //    client.BaseAddress = new Uri("http://localhost:52462/api/");
+
+    //    var deleteTask = client.DeleteAsync("kld/delete/" + id.ToString());
+    //    deleteTask.Wait();
+
+    //    var result = deleteTask.Result;
+    //    if (result.IsSuccessStatusCode)
+    //      return RedirectToAction("Index");        
+    //  }
+
+    //  return RedirectToAction("Index");
+    //}
+
+    /*
+     * secure delete: 
+       source: http://stephenwalther.com/archive/2009/01/21/asp-net-mvc-tip-46-ndash-donrsquot-use-delete-links-because
+     */
+    //[AcceptVerbs(HttpVerbs.Delete)]
+    /*
+     * source: https://docs.microsoft.com/en-us/aspnet/mvc/overview/getting-started/introduction/examining-the-details-and-delete-methods
+     */
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public ActionResult Delete(Guid id)
+    {
+      using (var client = new HttpClient())
+      {
+        client.BaseAddress = new Uri("http://localhost:52462/api/");
+
+        var deleteTask = client.DeleteAsync("kld/delete/" + id.ToString());
+        deleteTask.Wait();
+
+        var result = deleteTask.Result;
+        if (result.IsSuccessStatusCode)
+          return RedirectToAction("Index");
+      }
+
+      return RedirectToAction("Index");
     }
 
     // GET: Home
