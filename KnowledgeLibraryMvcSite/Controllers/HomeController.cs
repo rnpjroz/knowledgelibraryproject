@@ -130,26 +130,52 @@ namespace KnowledgeLibraryMvcSite.Controllers
       return RedirectToAction("Index");
     }
 
-    // GET: Home
-    //public ActionResult Index()
-    //{
-    //  var records = new object();
+    [HttpGet, ActionName("Update")]
+    public ActionResult UpdateKld(Guid id)
+    {
+      KnowledgeLibraryDetail record = new KnowledgeLibraryDetail();
 
-    //  using (var handler = new HttpClientHandler())
-    //  {
-    //    //kung me credentials na kailangan
-    //    //handler.Credentials = new System.Net.NetworkCredential(@"DOMAIN\USERNAME", "PASSWORD");
-    //    using (var client = new HttpClient(handler))
-    //    {
-    //      client.BaseAddress = new Uri("http://localhost:52462/api/");
-    //      var result = client.GetAsync("kld").Result;
-    //      string resultContent = result.Content.ReadAsStringAsync().Result;
+      using (var client = new HttpClient())
+      {
+        
+        client.BaseAddress = new Uri("http://localhost:52462/api/");
 
-    //      JavaScriptSerializer json_serializer = new JavaScriptSerializer();
-    //      records = json_serializer.DeserializeObject(resultContent);
-    //    }
-    //  }      
-    //  return View(records);
-    //}
+        var getTask = client.GetAsync("kld/get/" + id.ToString());
+        getTask.Wait();
+
+        var result = getTask.Result;
+        if (result.IsSuccessStatusCode)
+        {
+          string resultContent = result.Content.ReadAsStringAsync().Result;
+
+          JavaScriptSerializer json_serializer = new JavaScriptSerializer();
+          record = json_serializer.Deserialize<KnowledgeLibraryDetail>(resultContent);
+        }
+        else
+          ModelState.AddModelError(string.Empty, "Server Error. Please contact administrator.");
+      }      
+
+      return View(record);
+    }
+
+    [HttpPost, ActionName("Update")]
+    [ValidateAntiForgeryToken]
+    public ActionResult UpdateKld(KnowledgeLibraryDetail kldRecordToSave)
+    {
+      using (var client = new HttpClient())
+      {
+        client.BaseAddress = new Uri("http://localhost:52462/api/");
+
+        var putTask = client.PutAsJsonAsync<KnowledgeLibraryDetail>("kld/update", kldRecordToSave);
+        putTask.Wait();
+
+        var result = putTask.Result;
+        if (result.IsSuccessStatusCode)        
+          return RedirectToAction("Index");        
+      }
+
+      ModelState.AddModelError(string.Empty, "Server Error. Please contact administrator.");
+      return View(kldRecordToSave);
+    }    
   }
 }
