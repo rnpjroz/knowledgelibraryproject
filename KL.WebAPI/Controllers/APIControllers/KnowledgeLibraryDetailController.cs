@@ -25,6 +25,19 @@ namespace KL.WebAPI.Controllers
       return records;
     }
 
+    [Route("getalldevtypes")]
+    [HttpGet]
+    public IEnumerable<DevelopmentType> GetAllDevTypes()
+    {
+      BaseRepository<DevelopmentType> repo = new BaseRepository<DevelopmentType>();
+      IList<DevelopmentType> records = repo.RetrieveAll();
+
+      if (records == null || records.Count < 1)
+        return null;
+
+      return records;
+    }
+
     [Route("get/{id}")]
     [HttpGet]
     public IHttpActionResult Get(Guid id)

@@ -14,9 +14,9 @@
         <th>
             @Html.DisplayNameFor(model => model.URL)
         </th>
-        <th>
+        @*<th>
             @Html.DisplayNameFor(model => model.DevelopmentTypeId)
-        </th>
+        </th>*@
         <th></th>
     </tr>
 
@@ -31,9 +31,9 @@
         <td>
             @Html.DisplayFor(modelItem => item.URL)
         </td>
-        <td>
+        @*<td>
             @Html.DisplayFor(modelItem => item.DevelopmentTypeId)
-        </td>
+        </td>*@
         <td>
             @Html.ActionLink("Update", "Update", new { id=item.Id }) |
             @*@Html.ActionLink("Details", "Details", new { id=item.Id }) |*@

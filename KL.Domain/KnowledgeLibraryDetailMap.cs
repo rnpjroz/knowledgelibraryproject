@@ -12,7 +12,8 @@ namespace KL.Domain
       Map(x => x.Name).Not.Nullable();
       Map(x => x.Description);
       Map(x => x.URL);
-      Map(x => x.DevelopmentTypeId);     
+      //Map(x => x.DevelopmentTypeId);
+      References(x => x.DevelopmentType).Column("DevelopmentTypeId").LazyLoad();
     }
   }
 }

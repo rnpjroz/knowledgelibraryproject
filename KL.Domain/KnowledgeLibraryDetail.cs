@@ -15,7 +15,9 @@ namespace KL.Domain
     public virtual string Description { get; set; }
     [DataMember]
     public virtual string URL { get; set; }
+    //[DataMember]
+    //public virtual Guid DevelopmentTypeId { get; set; }
     [DataMember]
-    public virtual Guid DevelopmentTypeId { get; set; }
+    public virtual DevelopmentType DevelopmentType { get; set; }
   }
 }

@@ -56,6 +56,24 @@ namespace KnowledgeLibraryMvcSite.Controllers
     public ActionResult CreateKld()
     {
       KnowledgeLibraryDetail kldRecordToLoad = new KnowledgeLibraryDetail();
+
+      //source: https://stackoverflow.com/questions/27901175/how-to-get-dropdownlist-selectedvalue-in-controller-in-mvc
+      List<DevelopmentType> developmentTypes = new List<DevelopmentType>();
+      using (var handler = new HttpClientHandler())
+      {
+        using (var client = new HttpClient(handler))
+        {
+          client.BaseAddress = new Uri("http://localhost:52462/api/");
+          var result = client.GetAsync("kld/getalldevtypes").Result;
+          string resultContent = result.Content.ReadAsStringAsync().Result;
+
+          JavaScriptSerializer json_serializer = new JavaScriptSerializer();
+          developmentTypes = json_serializer.Deserialize<List<DevelopmentType>>(resultContent);
+          var fromDatabaseEF = new SelectList(developmentTypes, "Id", "Name");
+          ViewData["DevelopmentType"] = fromDatabaseEF;
+        }
+      }
+
       return View("CreateKld", kldRecordToLoad);
     }
 
@@ -67,7 +85,11 @@ namespace KnowledgeLibraryMvcSite.Controllers
         client.BaseAddress = new Uri("http://localhost:52462/api/");
 
         //todo: this is a hack, fix later and load dynamic dropdowns
-        kldRecordToSave.DevelopmentTypeId = Guid.Parse("71BE2DB6-C7EE-4EF9-9333-C204E1F61DBA");
+        kldRecordToSave.DevelopmentType 
+          = new DevelopmentType()
+            {
+              Id = Guid.Parse(Request.Form["DevelopmentType"].ToString())
+            };
 
         //HTTP POST
         var postTask = client.PostAsJsonAsync<KnowledgeLibraryDetail>("kld/add", kldRecordToSave);
@@ -81,7 +103,6 @@ namespace KnowledgeLibraryMvcSite.Controllers
       }
 
       ModelState.AddModelError(string.Empty, "Server Error. Please contact administrator.");
-
       return View(kldRecordToSave);
     }
 
@@ -135,9 +156,26 @@ namespace KnowledgeLibraryMvcSite.Controllers
     {
       KnowledgeLibraryDetail record = new KnowledgeLibraryDetail();
 
-      using (var client = new HttpClient())
+      //todo: not the best way to reload the dropdownlist
+      List<DevelopmentType> developmentTypes = new List<DevelopmentType>();
+      using (var handler = new HttpClientHandler())
       {
-        
+        using (var client = new HttpClient(handler))
+        {
+          client.BaseAddress = new Uri("http://localhost:52462/api/");
+          var result = client.GetAsync("kld/getalldevtypes").Result;
+          string resultContent = result.Content.ReadAsStringAsync().Result;
+
+          JavaScriptSerializer json_serializer = new JavaScriptSerializer();
+          developmentTypes = json_serializer.Deserialize<List<DevelopmentType>>(resultContent);
+          var fromDatabaseEF = new SelectList(developmentTypes, "Id", "Name");
+          ViewData["DevelopmentType"] = fromDatabaseEF;
+        }
+      }
+
+
+      using (var client = new HttpClient())
+      {        
         client.BaseAddress = new Uri("http://localhost:52462/api/");
 
         var getTask = client.GetAsync("kld/get/" + id.ToString());
@@ -165,6 +203,12 @@ namespace KnowledgeLibraryMvcSite.Controllers
       using (var client = new HttpClient())
       {
         client.BaseAddress = new Uri("http://localhost:52462/api/");
+
+        kldRecordToSave.DevelopmentType
+          = new DevelopmentType()
+          {
+            Id = Guid.Parse(Request.Form["DevelopmentType"].ToString())
+          };
 
         var putTask = client.PutAsJsonAsync<KnowledgeLibraryDetail>("kld/update", kldRecordToSave);
         putTask.Wait();
