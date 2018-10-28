@@ -46,7 +46,8 @@
 
           @Html.LabelFor(model => model.DevelopmentType, htmlAttributes: new { @class = "control-label col-md-2" })
           <div class="col-md-10">            
-            @Html.DropDownList("DevelopmentType", (IEnumerable<SelectListItem>)ViewData["DevelopmentType"])
+            @*@Html.DropDownList("DevelopmentType", (IEnumerable<SelectListItem>)ViewData["DevelopmentType"])*@
+            @Html.DropDownList("DevelopmentType", (SelectList)ViewBag.DevelopmentTypeBag)
           </div>
 
         </div>

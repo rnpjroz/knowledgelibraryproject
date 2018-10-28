@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Web;
 
 namespace KL.Domain
 {
@@ -14,10 +15,8 @@ namespace KL.Domain
     [DataMember]
     public virtual string Description { get; set; }
     [DataMember]
-    public virtual string URL { get; set; }
-    //[DataMember]
-    //public virtual Guid DevelopmentTypeId { get; set; }
+    public virtual string URL { get; set; }    
     [DataMember]
-    public virtual DevelopmentType DevelopmentType { get; set; }
+    public virtual DevelopmentType DevelopmentType { get; set; }    
   }
 }

@@ -84,12 +84,11 @@ namespace KnowledgeLibraryMvcSite.Controllers
       {
         client.BaseAddress = new Uri("http://localhost:52462/api/");
 
-        //todo: this is a hack, fix later and load dynamic dropdowns
-        kldRecordToSave.DevelopmentType 
-          = new DevelopmentType()
-            {
-              Id = Guid.Parse(Request.Form["DevelopmentType"].ToString())
-            };
+          kldRecordToSave.DevelopmentType 
+            = new DevelopmentType()
+              {
+                Id = Guid.Parse(Request.Form["DevelopmentType"].ToString())
+              };
 
         //HTTP POST
         var postTask = client.PostAsJsonAsync<KnowledgeLibraryDetail>("kld/add", kldRecordToSave);
@@ -106,32 +105,6 @@ namespace KnowledgeLibraryMvcSite.Controllers
       return View(kldRecordToSave);
     }
 
-    //[HttpDelete]
-    //public ActionResult Delete(Guid id)
-    //{
-    //  using (var client = new HttpClient())
-    //  {
-    //    client.BaseAddress = new Uri("http://localhost:52462/api/");
-
-    //    var deleteTask = client.DeleteAsync("kld/delete/" + id.ToString());
-    //    deleteTask.Wait();
-
-    //    var result = deleteTask.Result;
-    //    if (result.IsSuccessStatusCode)
-    //      return RedirectToAction("Index");        
-    //  }
-
-    //  return RedirectToAction("Index");
-    //}
-
-    /*
-     * secure delete: 
-       source: http://stephenwalther.com/archive/2009/01/21/asp-net-mvc-tip-46-ndash-donrsquot-use-delete-links-because
-     */
-    //[AcceptVerbs(HttpVerbs.Delete)]
-    /*
-     * source: https://docs.microsoft.com/en-us/aspnet/mvc/overview/getting-started/introduction/examining-the-details-and-delete-methods
-     */
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public ActionResult Delete(Guid id)
@@ -155,24 +128,7 @@ namespace KnowledgeLibraryMvcSite.Controllers
     public ActionResult UpdateKld(Guid id)
     {
       KnowledgeLibraryDetail record = new KnowledgeLibraryDetail();
-
-      //todo: not the best way to reload the dropdownlist
-      List<DevelopmentType> developmentTypes = new List<DevelopmentType>();
-      using (var handler = new HttpClientHandler())
-      {
-        using (var client = new HttpClient(handler))
-        {
-          client.BaseAddress = new Uri("http://localhost:52462/api/");
-          var result = client.GetAsync("kld/getalldevtypes").Result;
-          string resultContent = result.Content.ReadAsStringAsync().Result;
-
-          JavaScriptSerializer json_serializer = new JavaScriptSerializer();
-          developmentTypes = json_serializer.Deserialize<List<DevelopmentType>>(resultContent);
-          var fromDatabaseEF = new SelectList(developmentTypes, "Id", "Name");
-          ViewData["DevelopmentType"] = fromDatabaseEF;
-        }
-      }
-
+      SelectList developmentTypeList = null;
 
       using (var client = new HttpClient())
       {        
@@ -188,6 +144,25 @@ namespace KnowledgeLibraryMvcSite.Controllers
 
           JavaScriptSerializer json_serializer = new JavaScriptSerializer();
           record = json_serializer.Deserialize<KnowledgeLibraryDetail>(resultContent);
+
+          //todo: not the best way to reload the dropdownlist
+          //possibly a better way: https://stackoverflow.com/questions/6807256/dropdownlist-set-selected-value-in-mvc3-razor
+          List<DevelopmentType> developmentTypes = new List<DevelopmentType>();
+          using (var handler = new HttpClientHandler())
+          {
+            using (var client2 = new HttpClient(handler))
+            {
+              client2.BaseAddress = new Uri("http://localhost:52462/api/");
+              var result2 = client2.GetAsync("kld/getalldevtypes").Result;
+              string resultContent2 = result2.Content.ReadAsStringAsync().Result;
+
+              JavaScriptSerializer json_serializer2 = new JavaScriptSerializer();
+              developmentTypes = json_serializer2.Deserialize<List<DevelopmentType>>(resultContent);
+              developmentTypeList = new SelectList(developmentTypes, "Id", "Name", record.DevelopmentType.Id);
+              ViewBag.DevelopmentTypeBag = developmentTypeList;
+            }
+          }
+
         }
         else
           ModelState.AddModelError(string.Empty, "Server Error. Please contact administrator.");
